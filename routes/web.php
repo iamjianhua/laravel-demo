@@ -27,11 +27,18 @@ Route::group(['namespace' => 'Web'], function () {
 
     // 默认主页。
     Route::get('/home', 'DefaultsController@index')->name('home');
+
+    Route::get('/user/list', 'Auth\UserController@list_');
+
+    //Test route
+    Route::any('/mytest', function () {
+        return view('mytest');
+    });
 });
 
-Route::get('/blade', function () {
+/*Route::get('/blade', function () {
     return view('child');
-});
+});*/
 
 //Auth::routes();
 
