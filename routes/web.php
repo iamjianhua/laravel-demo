@@ -28,6 +28,9 @@ Route::group(['namespace' => 'Web'], function () {
     // 默认主页。
     Route::get('/home', 'DefaultsController@index')->name('home');
 
+    //用户中心
+    Route::resource('users', 'UsersController', ['only' => ['show', 'update', 'edit']]);
+
     Route::get('/user/list', 'Auth\UserController@list_');
 
     //Test route
