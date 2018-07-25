@@ -31,6 +31,12 @@ Route::group(['namespace' => 'Web'], function () {
     //用户中心
     Route::resource('users', 'UsersController', ['only' => ['show', 'update', 'edit']]);
 
+    // 话题分类。
+    Route::resource('categories', 'CategoriesController', ['only' => ['show']]);
+
+    // 用户话题。
+    Route::resource('topics', 'TopicsController');
+
     Route::get('/user/list', 'Auth\UserController@list_');
 
     //Test route
