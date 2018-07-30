@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Requests\Web\TopicFormRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Topic;
@@ -28,7 +27,8 @@ class TopicsController extends Controller
      */
     public function index(Request $request, Topic $topic)
     {
-        return view('web.topics.index', compact('topic'));
+        $topics = $topic->withOrder($request->order)->paginate(20);
+        return view('web.topics.index', compact('topics'));
     }
 
     /**
