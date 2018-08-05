@@ -9,7 +9,6 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
-            <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
                 <li class="{{ active_class(if_route('topics.index')) }}">
                     <a href="{{ route('topics.index') }}" class="nav-link"> 首页<span class="sr-only"></span></a>
@@ -28,9 +27,7 @@
                 </li>
             </ul>
 
-            <!-- Right Side Of Navbar -->
             <ul class="navbar-nav ml-auto easyedu-nav-right">
-                <!-- Authentication Links -->
                 @guest
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('login') }}">登录</a>
@@ -40,7 +37,7 @@
                 </li>
                 @else
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('topics.create') }}" class="nav-link">
                             <span><i class="fa fa-plus"></i></span>
                         </a>
                     </li>
