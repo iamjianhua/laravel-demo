@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Handlers\ImageHandler;
 use App\Http\Requests\Web\TopicFormRequest;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Topic;
@@ -30,6 +32,7 @@ class TopicsController extends Controller
     public function index(Request $request, Topic $topic)
     {
         $topics = $topic->withOrder($request->order)->paginate(20);
+
         return view('web.topics.index', compact('topics'));
     }
 
@@ -56,11 +59,12 @@ class TopicsController extends Controller
     public function create(Topic $topic)
     {
         $categories = Category::all();
+
         return view('web.topics.topic', compact('topic', 'categories'));
     }
 
     /**
-     * 话题创建操作
+     * 话题创建操作。
      *
      * @param \App\Http\Requests\Web\TopicFormRequest $request
      * @param \App\Models\Topic                       $topic
@@ -75,7 +79,7 @@ class TopicsController extends Controller
 
         return redirect()
             ->to($topic->link())
-            ->with(['message' => '话题创建成功']);
+            ->with(['success' => '话题创建成功！']);
     }
 
     /**
@@ -87,7 +91,18 @@ class TopicsController extends Controller
      */
     public function edit(Topic $topic)
     {
-        return view('web.topics.topic');
+        try {
+            $this->authorize('update', $topic);
+        } catch (AuthorizationException $e) {
+            //
+        }
+
+        $categories = Category::all();
+
+        return view('web.topics.topic', compact(
+            'topic',
+            'categories'
+        ));
     }
 
     /**
@@ -95,17 +110,74 @@ class TopicsController extends Controller
      *
      * @param \App\Http\Requests\Web\TopicFormRequest $request
      * @param \App\Models\Topic                       $topic
+     *
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(TopicFormRequest $request, Topic $topic)
     {
+        try {
+            $this->authorize('update', $topic);
+        } catch (AuthorizationException $e) {
+            //
+        }
+
+        $topic->update($request->all());
+
+        return redirect()
+            ->to($topic->link())
+            ->with(['success' => '话题更新成功！']);
     }
 
     /**
      * 话题删除操作。
      *
      * @param \App\Models\Topic $topic
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
      */
     public function destroy(Topic $topic)
     {
+        try {
+            $this->authorize('destroy', $topic);
+        } catch (AuthorizationException $e) {
+            //
+        }
+
+        $topic->delete();
+
+        return redirect()
+            ->route('topics.index')
+            ->with(['success' => '删除话题成功！']);
+    }
+
+    /**
+     * 上传话题图片操作。
+     *
+     * @param \Illuminate\Http\Request   $request
+     * @param \App\Handlers\ImageHandler $handler
+     *
+     * @return array
+     */
+    public function upload(Request $request, ImageHandler $handler)
+    {
+        $data = [
+            'status' => false,
+            'msg' => '上传失败！',
+            'path' => '',
+        ];
+
+        if ($file = $request->uploader) {
+            $result = $handler->upload($request->uploader, 'topics', Auth::id(), 1024);
+
+            if ($result) {
+                $data['status'] = true;
+                $data['msg'] = '上传成功！';
+                $data['path'] = $result['path'];
+            }
+        }
+
+        return $data;
     }
 }

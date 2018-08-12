@@ -37,6 +37,8 @@ Route::group(['namespace' => 'Web'], function () {
     // 用户话题。
     Route::resource('topics', 'TopicsController');
 
+    Route::post('upload', 'TopicsController@upload')->name('topics.upload');
+    
     Route::get('/user/list', 'Auth\UserController@list_');
 
     //Test route

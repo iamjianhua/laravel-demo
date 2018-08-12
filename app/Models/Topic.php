@@ -35,6 +35,14 @@ class Topic extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+
+    /**
      * 话题排序。
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
@@ -49,6 +57,7 @@ class Topic extends Model
         } else {
             $builder->updateDesc();
         }
+        
         return $builder->with('user', 'category');
     }
 
