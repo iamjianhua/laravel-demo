@@ -13,26 +13,33 @@ return [
     | to have a conventional place to find your various credentials.
     |
     */
-
+    
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
     ],
-
     'ses' => [
         'key' => env('SES_KEY'),
         'secret' => env('SES_SECRET'),
         'region' => env('SES_REGION', 'us-east-1'),
     ],
-
     'sparkpost' => [
         'secret' => env('SPARKPOST_SECRET'),
     ],
-
     'stripe' => [
-        'model' => App\User::class,
+        'model' => \App\Models\User::class,
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
-
+    'translate' => [
+        'driver' => env('TRANSLATE_DRIVER', 'baidu'),
+        'baidu' => ['url' => env('BAIDU_TRANSLATE_URL'),
+            'key' => env('BAIDU_TRANSLATE_KEY'),
+            'secret' => env('BAIDU_TRANSLATE_SECRET'),],
+        'youdao' => [
+            'url' => env('YOUDAO_TRANSLATE_URL'),
+            'key' => env('YOUDAO_TRANSLATE_KEY'),
+            'secret' => env('YOUDAO_TRANSLATE_SECRET'),
+        ],
+    ],
 ];
