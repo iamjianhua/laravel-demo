@@ -2,12 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
+/**
+ * @property \Illuminate\Database\Eloquent\Relations\HasMany topics
+ * @property \Illuminate\Database\Eloquent\Relations\HasMany replies
+ */
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable {
+        notify as protected inform;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -28,8 +35,21 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
+
+    /**
+     * @param mixed $instance
+     */
+    public function notify($instance)
+    {
+        if ($this->id === Auth::id()) {
+            return;
+        }
+        $this->increment('notification_count');
+        $this->inform($instance);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -38,7 +58,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Topic::class);
     }
-    
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+
+    /**
+     * 标记通知已读。
+     */
+    public function markAsRead()
+    {
+        $this->notification_count = 0;
+        $this->save();
+        $this->unreadNotifications()->update(['read_at' => now()]);
+    }
+
     /**
      * 判断是否为原作者。
      *

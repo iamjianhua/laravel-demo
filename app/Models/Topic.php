@@ -6,6 +6,12 @@ use App\Models\Traits\OrderTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property \Illuminate\Database\Eloquent\Relations\BelongsTo user
+ * @property \Illuminate\Database\Eloquent\Relations\BelongsTo category
+ * @property \Illuminate\Database\Eloquent\Relations\HasMany   replies
+ * @method Builder withOrder(Builder $builder, $order = null)
+ */
 class Topic extends Model
 {
     use OrderTrait;
@@ -46,7 +52,7 @@ class Topic extends Model
      * 话题排序。
      *
      * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param null                                  $order
+     * @param string|null                           $order
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */

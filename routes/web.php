@@ -41,7 +41,13 @@ Route::group(['namespace' => 'Web'], function () {
     Route::get('topics/{topic}/{slug?}', 'TopicsController@show')->name('topics.show');
 
     Route::post('upload', 'TopicsController@upload')->name('topics.upload');
-    
+
+    // 话题回复。
+    Route::resource('replies', 'RepliesController', ['only' => ['store', 'destroy']]);
+
+    // 回复通知。
+    Route::resource('notifications', 'NotificationsController', ['only' => ['index']]);
+
     Route::get('/user/list', 'Auth\UserController@list_');
 
     //Test route

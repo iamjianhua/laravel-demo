@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Reply;
 use App\Models\Topic;
+use App\Observers\ReplyObserver;
 use App\Observers\TopicObserver;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Blade;
@@ -18,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Topic::observe(TopicObserver::class);
+        Reply::observe(ReplyObserver::class);
+
         Carbon::setLocale('zh');
     }
 
@@ -28,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if (app()->isLocal()) {
+            $this->app->register(\VIACreative\SudoSu\ServiceProvider::class);
+        }
     }
 }

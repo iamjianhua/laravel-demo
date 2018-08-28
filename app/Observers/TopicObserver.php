@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Handlers\TranslateHandler;
 use App\Jobs\TranslateJob;
 use App\Models\Topic;
+use Illuminate\Support\Facades\DB;
 
 class TopicObserver
 {
@@ -29,5 +30,11 @@ class TopicObserver
             // 将翻译的任务推送到队列。
             dispatch(new TranslateJob($topic));
         }
+    }
+
+    public function deleted(Topic $topic)
+    {
+        // 删除话题时，将话题相关的回复一并删除掉。
+        DB::table('replies')->where('topic_id', $topic->id)->delete();
     }
 }
